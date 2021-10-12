@@ -2,6 +2,7 @@ package com.app.votingsystem.models;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,7 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 
 
 @Entity
@@ -24,11 +24,11 @@ public class Vote {
 	private Boolean hasVoted = false;
 	private String date;
 	
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne()
 	@JoinColumn(name = "voterId", referencedColumnName = "voterId")
 	private Voter voter;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "candidateId", referencedColumnName = "candidateId")
 	private ElectoralCandidate electoralCandidate;
 	

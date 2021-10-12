@@ -1,5 +1,7 @@
 package com.app.votingsystem.models;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,8 +14,10 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
-public class ElectoralCandidate {
+public class ElectoralCandidate implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,8 +32,9 @@ public class ElectoralCandidate {
 	
 	private Integer voteCount = 0;
 	
-	@OneToMany(fetch = FetchType.LAZY)
-	private List<Vote> vote;
+	@JsonIgnore
+	@OneToMany(mappedBy = "electoralCandidate")
+	private List<Vote> vote = new ArrayList<Vote>();
 	
 
 	public ElectoralCandidate() {
@@ -99,6 +104,14 @@ public class ElectoralCandidate {
 
 	public void setImage(String image) {
 		this.image = image;
+	}
+	
+	public List<Vote> getVote() {
+		return vote;
+	}
+
+	public void setVote(Vote vote) {
+		this.vote.add(vote);
 	}
 
 }

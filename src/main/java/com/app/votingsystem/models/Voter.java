@@ -1,5 +1,8 @@
 package com.app.votingsystem.models;
 
+import java.io.Serializable;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,7 +14,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @Entity
-public class Voter {
+public class Voter implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,9 +36,6 @@ public class Voter {
 	private String voterId;
 	
 	private Boolean enabled;
-	
-	@OneToOne(fetch = FetchType.LAZY)
-	private Vote vote;
 	
 	public Voter() {
 		super();
@@ -102,5 +102,4 @@ public class Voter {
 	public void setEnabled(Boolean enabled) {
 		this.enabled = enabled;
 	}
-	
 }

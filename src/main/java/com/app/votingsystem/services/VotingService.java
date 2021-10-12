@@ -38,7 +38,7 @@ public class VotingService {
 		Voter voter = voterRepository.findVoterByVoterId(voterId)
 				.orElseThrow(() -> new VotingSystemException("Voter with voterId: " + voterId + " not found."));
 		
-		Optional<Vote> vote = voteRepository.findByVoter_VoterId(voterId);
+		Optional<Vote> vote = voteRepository.findVoteByVoter(voter);
 		
 		return vote.isPresent();
 	}
@@ -52,10 +52,12 @@ public class VotingService {
 				.orElseThrow(() -> new VotingSystemException("Canditate with id: " + castVote.getVotedForCandidateId() + " not found."));
 		
 		Vote vote = new Vote(true, new Date().toString(), voter, candidate);
-		voteRepository.save(vote);
 		
 		candidate.setVoteCount(1);
+		candidate.setVote(vote);
 		electoralCandidateRepository.save(candidate);
+		
+		voteRepository.save(vote);
 		
 		return "Succsess";
 	}
