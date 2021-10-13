@@ -9,10 +9,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.app.votingsystem.dto.CastVote;
+import com.app.votingsystem.dto.ValidateOtp;
 import com.app.votingsystem.models.ElectoralCandidate;
 import com.app.votingsystem.services.VotingService;
 
@@ -22,6 +24,18 @@ public class VotingController {
 	
 	@Autowired
 	private VotingService votingService;
+	
+	@PutMapping("/validateotp")
+	public ResponseEntity<Boolean> validateOtp(@RequestBody ValidateOtp validateOtp) {
+		Boolean response = votingService.validateOtpProvidedByVoter(validateOtp);	
+		return new ResponseEntity<Boolean>(response, HttpStatus.OK);
+	}
+	
+	@GetMapping("/getotp/{voterId}")
+	public ResponseEntity<String> generateOtpForVoter(@PathVariable String voterId) {
+		votingService.generateOtpForVoter(voterId);
+		return new ResponseEntity<String>("Success", HttpStatus.OK);
+	}
 	
 	@GetMapping("/getelectoralcandidate")
 	public ResponseEntity<List<ElectoralCandidate>> getAllElectoralCandidates() {

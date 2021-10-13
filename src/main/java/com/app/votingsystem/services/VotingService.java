@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.app.votingsystem.dto.CastVote;
+import com.app.votingsystem.dto.ValidateOtp;
 import com.app.votingsystem.exception.VotingSystemException;
 import com.app.votingsystem.models.ElectoralCandidate;
 import com.app.votingsystem.models.Vote;
@@ -29,6 +30,21 @@ public class VotingService {
 	private ElectoralCandidateRepository electoralCandidateRepository;
 	@Autowired
 	private VoteRepository voteRepository;
+	@Autowired
+	private OtpService otpService;
+	
+	public Boolean validateOtpProvidedByVoter(ValidateOtp validateOtp) {
+		return otpService.validateOtp(validateOtp);
+	}
+	
+	public void generateOtpForVoter(String voterId) {
+		Voter voter = voterRepository.findVoterByVoterId(voterId)
+				.orElseThrow(() -> new VotingSystemException("Voter with voterId: " + voterId + " not found."));
+		
+		String otp = otpService.generateOtp(voterId);
+		
+		otpService.sendOtpToEmail(otp, voter);
+	}
 	
 	public List<ElectoralCandidate> getAllElectoralCandidates() {
 		return electoralCandidateRepository.findAll();
