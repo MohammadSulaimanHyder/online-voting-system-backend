@@ -1,5 +1,6 @@
 package com.app.votingsystem.services;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -15,9 +16,11 @@ import com.app.votingsystem.dto.CastVote;
 import com.app.votingsystem.dto.ValidateOtp;
 import com.app.votingsystem.exception.VotingSystemException;
 import com.app.votingsystem.models.ElectoralCandidate;
+import com.app.votingsystem.models.PoliticalParty;
 import com.app.votingsystem.models.Vote;
 import com.app.votingsystem.models.Voter;
 import com.app.votingsystem.repository.ElectoralCandidateRepository;
+import com.app.votingsystem.repository.PoliticalPartyRepository;
 import com.app.votingsystem.repository.VoteRepository;
 import com.app.votingsystem.repository.VoterRepository;
 
@@ -32,6 +35,8 @@ public class VotingService {
 	private VoteRepository voteRepository;
 	@Autowired
 	private OtpService otpService;
+	@Autowired
+	private PoliticalPartyRepository politicalPartyRepository;
 	
 	public Boolean validateOtpProvidedByVoter(ValidateOtp validateOtp) {
 		return otpService.validateOtp(validateOtp);
@@ -44,6 +49,11 @@ public class VotingService {
 		String otp = otpService.generateOtp(voterId);
 		
 		otpService.sendOtpToEmail(otp, voter);
+	}
+	
+	public List<PoliticalParty> getAllPartyDetials() {
+		
+		return politicalPartyRepository.findAll();
 	}
 	
 	public List<ElectoralCandidate> getAllElectoralCandidates() {
@@ -75,7 +85,16 @@ public class VotingService {
 		
 		voteRepository.save(vote);
 		
-		return "Succsess";
+		PoliticalParty politicalParty = politicalPartyRepository.getByPartyName(candidate.getPartyName())
+				.orElseThrow(() -> new VotingSystemException("Party with name: " + candidate.getPartyName() + " not found."));
+		
+		int count = politicalParty.getCurrentVoteCount();
+		count += 1;
+		politicalParty.setCurrentVoteCount(count);
+		
+		politicalPartyRepository.save(politicalParty);
+		
+		return "{\"status\": \"Success\" }";
 	}
 
 }

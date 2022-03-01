@@ -22,7 +22,7 @@ public class AuthenticationController {
 	@Autowired
 	private AuthenticationServices authenticationServices;
 	
-	@GetMapping("/voterlogin")
+	@PostMapping("/voterlogin")
 	public ResponseEntity<AuthenticationResponse> voterLogin(@RequestBody LoginRequest loginRequest) {
 		
 		AuthenticationResponse authenticationResponse = authenticationServices.voterLogin(loginRequest);

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.app.votingsystem.dto.CastVote;
 import com.app.votingsystem.dto.ValidateOtp;
 import com.app.votingsystem.models.ElectoralCandidate;
+import com.app.votingsystem.models.PoliticalParty;
 import com.app.votingsystem.services.VotingService;
 
 @Controller
@@ -42,6 +44,14 @@ public class VotingController {
 		List<ElectoralCandidate> candiateList = votingService.getAllElectoralCandidates();
 		
 		return new ResponseEntity<List<ElectoralCandidate>>(candiateList, HttpStatus.OK);
+	}
+	
+	@GetMapping("/getallpartydetails")
+	public ResponseEntity<List<PoliticalParty>> getAllPartyDetials() {
+		
+		List<PoliticalParty> partyDetails = votingService.getAllPartyDetials();
+
+		return new ResponseEntity<List<PoliticalParty>>(partyDetails, HttpStatus.OK);
 	}
 	
 	@GetMapping("/hasvotedbefore/{voterId}")
